@@ -1,91 +1,98 @@
 // 
 'use strict';
-// const {
-//   stackTraceLimit
-// } = require("../extensions/custom-error");
-// const CustomError = require("../extensions/custom-error");
-const arr = [1, 2, 3, '--double-next', 1337, '--discard-prev', 4, 5];
+const {
+	stackTraceLimit
+} = require("../extensions/custom-error");
+const CustomError = require("../extensions/custom-error");
+const arr = [1, 2, 3, '--double-next', 1337, '--double-prev', 4, 5];
+let index = 0;
 // module.exports = function transform(arr) {
 if (!Array.isArray) {
-  throw new Error('Error');
+	throw new Error('Error');
 }
 let massive = arr;
-let arrLen = massive.length;
-let index = 0;
-
-
-function incrementIndex() {
-	index++;
-}
-
-function isTheLast() {
-	return index === massive.length - 1;
-}
-
-function isFirst() {
-	return index === 0;
-}
-
-function removeCurrent() {
-	massive.splice(index, 1);
-}
-
 function discardNext() {
-  if (isTheLast()) {
-    removeCurrent();
-  } else {
-    massive.splice(index, 2);
-    arrLen = massive.length;
-  }
+	massive[index] = undefined;
+	massive[index + 1] = undefined;
 }
-
-function discardPrev() {
-  if (isFirst()) {
-    removeCurrent();
-  } else {
-    massive.splice(index - 1, 2);
-    arrLen = massive.length;
-		index--;
-  }
-}
-
-function doubleNext() {
-  if (isTheLast()) {
-    removeCurrent();
-  } else {
-    massive[index] = massive[index + 1];
-    arrLen = massive.length;
-  }
-}
-
-function doublePrev() {
-  if (isFirst()) {
-    removeCurrent();
-  } else {
-    massive[index] = massive[index - 1];
-    arrLen = massive.length;
-  }
-}
-
 const methods = {
 	'--discard-next': discardNext,
 	'--discard-prev': discardPrev,
 	'--double-next': doubleNext,
-	'--double-prev': doublePrev,
+	'--double-prev': doublePrev
 };
-// перебираем элементы пока индекс меньше длины массива сравниваем с инструкциями в объекте
-while (index < arrLen) {
-	// динамическая функция. если элемент равен названию метода, то назначается функция из объекта, иначе назначается функция инкремента индекса
 
-	const method = methods[massive[index]] || incrementIndex;
-	// вызываем метод
+while (index < arr.length) {
+	const method = methods[arr[index]] || incrementIndex;
 	method();
+	index++;
 }
-// console.log(massive);
-//Возвращаем массив
-return massive = massive.filter();
 
 
+// let massive = [];
+// // let arrLen = massive.length;
+// let index = 0;
 
+// function checkElem(i) {
+// 	return typeof (arr[i]) === Number;
+// }
+
+// function incrementIndex() {
+// 	if (checkElem(index)) {
+// 		massive.push(arr[index])
+// 	}
+// 	// index++;
+// }
+
+// function isTheLast() {
+// 	return index === arr.length - 1;
+// }
+
+// function isFirst() {
+// 	return index === 0;
+// }
+
+// // function removeCurrent() {
+// // 	massive.splice(index, 1);
+// // }
+
+// function discardNext() {
+// 	if (!isTheLast && checkElem(index)) {
+// 		index += 2;
+// 	}
 
 // }
+
+// function discardPrev() {
+// 	if (!isFirst && checkElem(index)) {
+// 		massive.pop();
+// 	}
+
+// 	// index++;
+// }
+
+// function doubleNext() {
+// 	if (!isTheLast && checkElem(index)) {
+// 		massive.push(arr[index + 1]);
+// 	}
+// 	// index++;
+// }
+
+// function doublePrev() {
+// 	if (!isTheLast && checkElem(index)) {
+// 		massive.push(arr[index - 1]);
+// 		index--;
+// 	}
+// }
+
+// const methods = {
+// 	'--discard-next': discardNext,
+// 	'--discard-prev': discardPrev,
+// 	'--double-next': doubleNext,
+// 	'--double-prev': doublePrev,
+// };
+// // перебираем элементы пока индекс меньше длины массива сравниваем с инструкциями в объекте
+
+// //Возвращаем массив
+// return massive;
+// // }
