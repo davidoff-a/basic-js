@@ -2,15 +2,15 @@
 const CustomError = require('../extensions/custom-error');
 
 module.exports = function repeater(str, options) {
-	let mainStr = '',
-		additionalStr = '';
+	let mainStr = '';
+	let additionalStr = '';
 	// const str = 'la';
 	// const options = {
-	// 	'repeatTimes':3,
-	// 	'separator':'',
-	// 	'addition':'',
-	// 	'additionRepeatTimes':'',
-	// 	'additionSeparator':'',
+	// 	repeatTimes: 3,
+	// 	separator: undefined,
+	// 	addition: undefined,
+	// 	additionRepeatTimes: undefined,
+	// 	additionSeparator: undefined,
 	// };
 	if (options.separator === '' || options.separator === undefined) {
 		options.separator = '+';
@@ -36,13 +36,17 @@ module.exports = function repeater(str, options) {
 	) {
 		options.additionRepeatTimes = 1;
 	}
-	for (let i = 0; i < options.additionRepeatTimes; i++) {
-		additionalStr += `${options.addition}${options.additionSeparator}`;
+	if ((options.addition === '' || options.addition === 'undefined')) {
+		additionalStr = '';
+	} else {
+		for (let i = 0; i < options.additionRepeatTimes; i++) {
+			additionalStr += `${options.addition}${options.additionSeparator}`;
+		}
+		additionalStr = additionalStr.substr(
+			0,
+			additionalStr.length - options.additionSeparator.length
+		);
 	}
-	additionalStr = additionalStr.substr(
-		0,
-		additionalStr.length - options.additionSeparator.length
-	);
 	for (let j = 0; j < options.repeatTimes; j++) {
 		mainStr += `${str}${additionalStr}${options.separator}`;
 	}
