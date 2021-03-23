@@ -57,9 +57,6 @@ class VigenereCipheringMachine {
         }
       })
       .join('');
-      if (!this.direction){
-
-      }
     return (this.direction===false) ? messageEncrypted.split('').reverse().join('') : messageEncrypted;
   }
   decrypt(message, key) {
@@ -87,9 +84,6 @@ class VigenereCipheringMachine {
         }
       })
       .join('');
-    if (!this.direction) {
-
-    }
     return (this.direction === false) ? messageEncrypted.split('').reverse().join('') : messageEncrypted;
   }
 }
