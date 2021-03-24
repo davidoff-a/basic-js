@@ -33,51 +33,16 @@ class VigenereCipheringMachine {
     };
   }
   encrypt(message, key) {
-    let keyCrypt = '',
-      messageEncrypted = '',
-      count=0; 
-    message = message.toUpperCase();
-    key = key.repeat(Math.ceil(message.length / key.length)).toUpperCase();
-    for (let i=0; i<message.length; i++){
-      if (this.letters[message[i]] !== undefined) {
-        keyCrypt += key[count++];
-      } else {
-        keyCrypt += message[i];
-      }
-    }
-    messageEncrypted = message
-      .toUpperCase()
-      .split('')
-      .map((item,i)=>{
-        if (this.letters[item] !== undefined){
-          let index = (this.letters[item] + this.letters[keyCrypt[i]]) % 26;
-          return Object.keys(this.letters)[index];
-        } else {
-          return item;
-        }
-      })
-      .join('');
-    return (this.direction===false) ? messageEncrypted.split('').reverse().join('') : messageEncrypted;
-  }
-  decrypt(message, key) {
-    let keyCrypt = '',
-      messageEncrypted = '',
-      count = 0;
-    message = message.toUpperCase();
-    key = key.repeat(Math.ceil(message.length / key.length)).toUpperCase();
-    for (let i = 0; i < message.length; i++) {
-      if (this.letters[message[i]] !== undefined) {
-        keyCrypt += key[count++];
-      } else {
-        keyCrypt += message[i];
-      }
-    }
+
+    let messageEncrypted = '';
+    const keyCrypt = this.getCryptKey(message, key);
+
     messageEncrypted = message
       .toUpperCase()
       .split('')
       .map((item, i) => {
         if (this.letters[item] !== undefined) {
-          let index = (this.letters[item] - this.letters[keyCrypt[i]]+26) % 26;
+          let index = (this.letters[item] + this.letters[keyCrypt[i]]) % 26;
           return Object.keys(this.letters)[index];
         } else {
           return item;
@@ -86,6 +51,42 @@ class VigenereCipheringMachine {
       .join('');
     return (this.direction === false) ? messageEncrypted.split('').reverse().join('') : messageEncrypted;
   }
+  decrypt(message, key) {
+
+    const keyCrypt = this.getCryptKey(message, key);
+    
+    let messageEncrypted = '';
+
+    messageEncrypted = message
+      .toUpperCase()
+      .split('')
+      .map((item, i) => {
+        if (this.letters[item] !== undefined) {
+          let index = (this.letters[item] - this.letters[keyCrypt[i]] + 26) % 26;
+          return Object.keys(this.letters)[index];
+        } else {
+          return item;
+        }
+      })
+      .join('');
+    return (this.direction === false) ? messageEncrypted.split('').reverse().join('') : messageEncrypted;
+  }
+
+  getCryptKey(message, key) {
+    let count = 0;
+    message = message.toUpperCase();
+    key = key.repeat(Math.ceil(message.length / key.length)).toUpperCase();
+
+    return [...message].reduce((acc, letter) => {
+      const suffix = (this.letters[letter] !== undefined) ?
+        key[count++] :
+        letter;
+
+      return acc += suffix;
+    }, '');
+
+  }
 }
+
 
 module.exports = VigenereCipheringMachine;
